@@ -7,8 +7,9 @@ stages:
   - deploy
 
 variables:
+  STACK: ${CI_PROJECT_NAME}
   DD_AGENT_IMAGE_NAME: portainer/agent
-  PORTAINER_IMAGE_NAME: portainer/portainer
+  DD_PORTAINER_IMAGE_NAME: portainer/portainer
 
 .deploy:
   variables:
