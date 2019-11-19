@@ -31,6 +31,7 @@ services:
     command:
       - -H
       - tcp://tasks.${STACK_NAME:-portainer}_agent:${AGENT_PORT}
+      - --tlsskipverify
       - -p
       - :${PORTAINER_PORT}
     networks:
