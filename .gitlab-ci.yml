@@ -6,11 +6,6 @@ include:
 stages:
   - deploy
 
-variables:
-  STACK: ${CI_PROJECT_NAME}
-  DD_AGENT_IMAGE_NAME: portainer/agent
-  DD_PORTAINER_IMAGE_NAME: portainer/portainer
-
 .deploy:
   variables:
     SERVICES_TO_CHECK: ${CI_PROJECT_NAME}_agent ${CI_PROJECT_NAME}_${CI_PROJECT_NAME}
