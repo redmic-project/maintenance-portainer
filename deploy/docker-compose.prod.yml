@@ -1,15 +1,15 @@
 version: '3.5'
 
 services:
-  portainer:
+  portainer-ce:
     deploy:
       placement:
         constraints:
           - node.role == manager
 
 volumes:
-  portainer-vol:
-    name: ${PORTAINER_VOL_NAME}
+  data-vol:
+    name: ${PORTAINER_CE_DATA_VOL_NAME}
     driver: 'cloudstor:aws'
     driver_opts:
       backing: shared
