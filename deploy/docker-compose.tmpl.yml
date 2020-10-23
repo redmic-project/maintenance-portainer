@@ -27,7 +27,7 @@ services:
           memory: ${PORTAINER_AGENT_RESOURCES_RESERVATIONS_MEMORY:-16M}
 
   portainer-ce:
-    image: ${PORTAINER_CE_IMAGE_NAME:-portainer/portainer}:${PORTAINER_CE_IMAGE_TAG:-latest}
+    image: ${PORTAINER_CE_IMAGE_NAME:-portainer/portainer-ce}:${PORTAINER_CE_IMAGE_TAG:-latest}
     command:
       - -H
       - tcp://tasks.${STACK_NAME:-maintenance}_portainer-agent:${AGENT_PORT}
