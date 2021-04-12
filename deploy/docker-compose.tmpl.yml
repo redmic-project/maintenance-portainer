@@ -1,8 +1,8 @@
 version: '3.5'
 
 services:
-  agent:
-    image: ${AGENT_IMAGE_NAME:-portainer/agent}:${AGENT_IMAGE_TAG:-latest}
+  portainer-agent:
+    image: ${PORTAINER_AGENT_IMAGE_NAME:-portainer/agent}:${PORTAINER_AGENT_IMAGE_TAG:-latest}
     environment:
       LOG_LEVEL:
       AGENT_PORT:
@@ -11,52 +11,52 @@ services:
       portainer-net:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ${AGENT_DOCKER_VOLUMES_PATH:-/var/lib/docker/volumes}:/var/lib/docker/volumes
+      - ${PORTAINER_AGENT_DOCKER_VOLUMES_PATH:-/var/lib/docker/volumes}:/var/lib/docker/volumes
     deploy:
       mode: global
       restart_policy:
-        delay: ${AGENT_RESTART_DELAY:-3s}
+        delay: ${PORTAINER_AGENT_RESTART_DELAY:-3s}
       update_config:
-        delay: ${AGENT_UPDATE_DELAY:-1m}
+        delay: ${PORTAINER_AGENT_UPDATE_DELAY:-1m}
       resources:
         limits:
-          cpus: '${AGENT_RESOURCES_LIMITS_CPUS:-0.5}'
-          memory: ${AGENT_RESOURCES_LIMITS_MEMORY:-64M}
+          cpus: '${PORTAINER_AGENT_RESOURCES_LIMITS_CPUS:-0.5}'
+          memory: ${PORTAINER_AGENT_RESOURCES_LIMITS_MEMORY:-64M}
         reservations:
-          cpus: '${AGENT_RESOURCES_RESERVATIONS_CPUS:-0.001}'
-          memory: ${AGENT_RESOURCES_RESERVATIONS_MEMORY:-16M}
+          cpus: '${PORTAINER_AGENT_RESOURCES_RESERVATIONS_CPUS:-0.001}'
+          memory: ${PORTAINER_AGENT_RESOURCES_RESERVATIONS_MEMORY:-16M}
 
-  portainer:
-    image: ${PORTAINER_IMAGE_NAME:-portainer/portainer}:${PORTAINER_IMAGE_TAG:-latest}
+  portainer-ce:
+    image: ${PORTAINER_CE_IMAGE_NAME:-portainer/portainer-ce}:${PORTAINER_CE_IMAGE_TAG:-latest}
     command:
       - -H
-      - tcp://tasks.${STACK_NAME:-portainer}_agent:${AGENT_PORT}
+      - tcp://tasks.${STACK_NAME:-maintenance}_portainer-agent:${AGENT_PORT}
       - --tlsskipverify
       - -p
-      - :${PORTAINER_PORT}
+      - :${PORTAINER_CE_PORT}
     networks:
       portainer-net:
       traefik-net:
     volumes:
-      - portainer-vol:/data
+      - data-vol:/data
     deploy:
       mode: replicated
-      replicas: ${PORTAINER_REPLICAS:-1}
+      replicas: ${PORTAINER_CE_REPLICAS:-1}
       restart_policy:
-        delay: ${PORTAINER_RESTART_DELAY:-10s}
+        delay: ${PORTAINER_CE_RESTART_DELAY:-10s}
       update_config:
-        delay: ${PORTAINER_UPDATE_DELAY:-1m}
+        delay: ${PORTAINER_CE_UPDATE_DELAY:-1m}
       labels:
         traefik.frontend.rule: Host:${TRAEFIK_SUBDOMAIN:-portainer}.${PUBLIC_HOSTNAME}
         traefik.backend: portainer
-        traefik.port: '${PORTAINER_PORT}'
+        traefik.port: '${PORTAINER_CE_PORT}'
       resources:
         limits:
-          cpus: '${PORTAINER_RESOURCES_LIMITS_CPUS:-0.5}'
-          memory: ${PORTAINER_RESOURCES_LIMITS_MEMORY:-64M}
+          cpus: '${PORTAINER_CE_RESOURCES_LIMITS_CPUS:-0.5}'
+          memory: ${PORTAINER_CE_RESOURCES_LIMITS_MEMORY:-64M}
         reservations:
-          cpus: '${PORTAINER_RESOURCES_RESERVATIONS_CPUS:-0.001}'
-          memory: ${PORTAINER_RESOURCES_RESERVATIONS_MEMORY:-16M}
+          cpus: '${PORTAINER_CE_RESOURCES_RESERVATIONS_CPUS:-0.001}'
+          memory: ${PORTAINER_CE_RESOURCES_RESERVATIONS_MEMORY:-16M}
 
 networks:
   portainer-net:

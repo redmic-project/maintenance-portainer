@@ -1,12 +1,10 @@
 version: '3.5'
 
-services:
-  portainer:
-    deploy:
-      placement:
-        constraints:
-          - node.hostname == ${PLACEMENT_CONSTRAINTS_NODE_HOSTNAME:-hostname}
-
 volumes:
-  portainer-vol:
-    name: ${PORTAINER_VOL_NAME}
+  data-vol:
+    name: ${PORTAINER_CE_DATA_VOL_NAME}
+    driver: local
+    driver_opts:
+      type: ${PORTAINER_CE_DATA_VOL_TYPE:-nfs4}
+      o: addr=${PORTAINER_CE_DATA_VOL_ADDR:-127.0.0.1},${PORTAINER_CE_DATA_VOL_OPTIONS:-rw,nolock,noatime,tcp,rsize=8192,wsize=8192,timeo=14}
+      device: ${PORTAINER_CE_DATA_VOL_DEVICE:-:/portainer-vol/}
