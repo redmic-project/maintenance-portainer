@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   portainer-agent:
     image: ${PORTAINER_AGENT_IMAGE_NAME:-portainer/agent}:${PORTAINER_AGENT_IMAGE_TAG:-latest}
@@ -42,22 +40,25 @@ services:
     deploy:
       mode: replicated
       replicas: ${PORTAINER_CE_REPLICAS:-1}
+      placement:
+        constraints:
+          - node.role == manager
       restart_policy:
         delay: ${PORTAINER_CE_RESTART_DELAY:-10s}
       update_config:
         delay: ${PORTAINER_CE_UPDATE_DELAY:-1m}
       labels:
-        traefik.enable: 'true'
+        traefik.enable: ${TRAEFIK_ENABLE:-true}
         traefik.http.routers.portainer.entrypoints: ${TRAEFIK_ENTRYPOINT:-http}
         traefik.http.routers.portainer.rule: Host(`${TRAEFIK_SUBDOMAIN:-portainer}.${PUBLIC_HOSTNAME}`)
         traefik.http.services.portainer.loadbalancer.server.port: ${PORTAINER_CE_PORT}
       resources:
         limits:
           cpus: '${PORTAINER_CE_RESOURCES_LIMITS_CPUS:-0.5}'
-          memory: ${PORTAINER_CE_RESOURCES_LIMITS_MEMORY:-64M}
+          memory: ${PORTAINER_CE_RESOURCES_LIMITS_MEMORY:-128M}
         reservations:
           cpus: '${PORTAINER_CE_RESOURCES_RESERVATIONS_CPUS:-0.001}'
-          memory: ${PORTAINER_CE_RESOURCES_RESERVATIONS_MEMORY:-16M}
+          memory: ${PORTAINER_CE_RESOURCES_RESERVATIONS_MEMORY:-32M}
 
 networks:
   portainer-net:
